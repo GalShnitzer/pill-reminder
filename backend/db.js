@@ -17,7 +17,7 @@ async function initDb() {
 }
 
 async function getTodayStatus() {
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' });
   const { rows } = await pool.query(
     `INSERT INTO pill_logs (date) VALUES ($1)
      ON CONFLICT (date) DO NOTHING
@@ -30,7 +30,7 @@ async function getTodayStatus() {
 }
 
 async function toggleToday() {
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' });
   const { rows } = await pool.query(
     `INSERT INTO pill_logs (date, taken, taken_at)
      VALUES ($1, TRUE, NOW())
