@@ -59,7 +59,7 @@ export default function App() {
     }
   }
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toLocaleDateString('en-CA');
   const taken = status?.taken ?? false;
 
   return (
