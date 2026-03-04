@@ -26,7 +26,7 @@ async function sendReminderEmail(subject, body) {
 
 // ─── Cron Jobs ───────────────────────────────────────────────────────────────
 
-// Initial reminder at 12:00 PM every day
+// Initial reminder at 12:00 PM every day (Israel time)
 cron.schedule('0 12 * * *', async () => {
   const status = await getTodayStatus();
   if (!status.taken) {
@@ -37,13 +37,13 @@ cron.schedule('0 12 * * *', async () => {
        <p><a href="${process.env.FRONTEND_URL}">Click here to mark it as taken</a></p>`
     );
   }
-});
+}, { timezone: 'Asia/Jerusalem' });
 
-// Follow-up every 2 hours from 14:00 to 22:00 if not taken
+// Follow-up every 2 hours from 14:00 to 22:00 if not taken (Israel time)
 cron.schedule('0 14,16,18,20,22 * * *', async () => {
   const status = await getTodayStatus();
   if (!status.taken) {
-    const hour = new Date().getHours();
+    const hour = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' })).getHours();
     await sendReminderEmail(
       `Reminder: Have you taken your pill? (${hour}:00)`,
       `<h2>Pill Reminder Follow-up</h2>
@@ -51,7 +51,7 @@ cron.schedule('0 14,16,18,20,22 * * *', async () => {
        <p><a href="${process.env.FRONTEND_URL}">Click here to mark it as taken</a></p>`
     );
   }
-});
+}, { timezone: 'Asia/Jerusalem' });
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 
