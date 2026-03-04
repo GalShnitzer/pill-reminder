@@ -74,6 +74,13 @@ header h1 {
   color: #276749;
 }
 
+/* ── Main ── */
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 /* ── Toggle button ── */
 .toggle-btn {
   width: 100%;
