@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 const API = import.meta.env.VITE_API_URL || '';
 
 function formatDate(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
+  const d = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
