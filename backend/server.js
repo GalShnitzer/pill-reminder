@@ -2,28 +2,21 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const cron = require('node-cron');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const { initDb, getTodayStatus, toggleToday, getHistory } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 app.use(express.json());
 
 // ─── Email ───────────────────────────────────────────────────────────────────
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
-
 async function sendReminderEmail(subject, body) {
-  await transporter.sendMail({
-    from: `"Pill Reminder" <${process.env.GMAIL_USER}>`,
+  await resend.emails.send({
+    from: 'Pill Reminder <onboarding@resend.dev>',
     to: process.env.REMINDER_EMAIL,
     subject,
     html: body,
