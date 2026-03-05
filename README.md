@@ -35,7 +35,9 @@ A simple React + Node.js app to track daily pill intake with email reminders.
 
 ---
 
-## Cloud Deployment
+## Deploy Your Own Instance
+
+> ⚠️ **Note:** This app is currently designed for a **single user** — it tracks one person's pills and sends reminders to one email address. If you want to use it yourself, follow these steps to deploy your own instance with your own credentials.
 
 ### 1. Database → Neon
 
