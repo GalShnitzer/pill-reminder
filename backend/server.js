@@ -28,28 +28,38 @@ async function sendReminderEmail(subject, body) {
 
 // Initial reminder at 12:00 PM every day (Israel time)
 cron.schedule('0 12 * * *', async () => {
-  const status = await getTodayStatus();
-  if (!status.taken) {
-    await sendReminderEmail(
-      'Time to take your pill!',
-      `<h2>Pill Reminder</h2>
+  try {
+    const status = await getTodayStatus();
+    console.log(`[cron 12:00] taken=${status.taken}`);
+    if (!status.taken) {
+      await sendReminderEmail(
+        'Time to take your pill!',
+        `<h2>Pill Reminder</h2>
        <p>It's 12:00 PM — don't forget to take your pill today!</p>
        <p><a href="${process.env.FRONTEND_URL}">Click here to mark it as taken</a></p>`
-    );
+      );
+    }
+  } catch (err) {
+    console.error('[cron 12:00] error:', err.message);
   }
 }, { timezone: 'Asia/Jerusalem' });
 
 // Follow-up every 2 hours from 14:00 to 22:00 if not taken (Israel time)
 cron.schedule('0 14,16,18,20,22 * * *', async () => {
-  const status = await getTodayStatus();
-  if (!status.taken) {
+  try {
+    const status = await getTodayStatus();
     const hour = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' })).getHours();
-    await sendReminderEmail(
-      `Reminder: Have you taken your pill? (${hour}:00)`,
-      `<h2>Pill Reminder Follow-up</h2>
+    console.log(`[cron ${hour}:00] taken=${status.taken}`);
+    if (!status.taken) {
+      await sendReminderEmail(
+        `Reminder: Have you taken your pill? (${hour}:00)`,
+        `<h2>Pill Reminder Follow-up</h2>
        <p>You haven't marked your pill as taken yet. Please take it as soon as possible!</p>
        <p><a href="${process.env.FRONTEND_URL}">Click here to mark it as taken</a></p>`
-    );
+      );
+    }
+  } catch (err) {
+    console.error(`[cron follow-up] error:`, err.message);
   }
 }, { timezone: 'Asia/Jerusalem' });
 
