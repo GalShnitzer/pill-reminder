@@ -6,6 +6,16 @@ A simple React + Node.js app to track daily pill intake with email reminders.
 - Email reminder at **12:00 PM** if not taken
 - Follow-up emails every **2 hours** (14:00, 16:00, 18:00, 20:00, 22:00)
 - 7-day history
+- All times in **Israel timezone (Asia/Jerusalem)**
+
+---
+
+## Live Deployment
+
+| | URL |
+|---|---|
+| Frontend | https://pill-reminder.vercel.app |
+| Backend | https://pill-reminder-1lkh.onrender.com |
 
 ---
 
@@ -13,28 +23,72 @@ A simple React + Node.js app to track daily pill intake with email reminders.
 
 | | Tech | Host |
 |---|---|---|
-| Frontend | React + Vite | Vercel |
-| Backend | Node.js + Express + node-cron | Render |
+| Frontend | React + Vite | Vercel (free) |
+| Backend | Node.js + Express + node-cron | Render (free) |
 | Database | PostgreSQL | Neon (free) |
-| Email | Nodemailer + Gmail | — |
+| Email | Resend | — |
+| Uptime monitor | UptimeRobot | — |
+
+---
+
+## Cloud Deployment
+
+### 1. Database → Neon
+
+1. Sign up at https://neon.tech
+2. Create a project → copy the **Connection String** (`postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require`)
+3. The `pill_logs` table is created automatically on first server start (`initDb()` in `db.js`)
+
+### 2. Email → Resend
+
+1. Sign up at https://resend.com
+2. Go to **API Keys** → create a new key
+3. On the free tier, emails can only be sent **to the email you signed up with**
+4. To send to a different address, verify a domain in Resend settings
+
+### 3. Backend → Render
+
+1. Go to https://render.com → **New Web Service**
+2. Connect your GitHub repo, set:
+   - **Root directory**: `backend`
+   - **Build command**: `npm install`
+   - **Start command**: `node server.js`
+   - **Instance type**: Free
+3. Add **Environment Variables**:
+
+| Key | Value |
+|-----|-------|
+| `RESEND_API_KEY` | your Resend API key |
+| `REMINDER_EMAIL` | email to receive reminders |
+| `DATABASE_URL` | your Neon connection string |
+| `FRONTEND_URL` | https://your-app.vercel.app (fill after Vercel deploy) |
+
+### 4. Frontend → Vercel
+
+1. Go to https://vercel.com → **New Project**
+2. Import your GitHub repo, set:
+   - **Root directory**: `frontend`
+3. Add **Environment Variable**:
+   - `VITE_API_URL` = your Render service URL
+4. Deploy → copy the URL and set it as `FRONTEND_URL` on Render
+
+### 5. Uptime Monitor → UptimeRobot (keeps Render free tier awake)
+
+Render's free tier spins down after 15 minutes of inactivity, which would cause the cron jobs to miss their scheduled time.
+
+1. Sign up at https://uptimerobot.com (free)
+2. **Add New Monitor**:
+   - Type: **HTTP(s)**
+   - URL: `https://your-render-service.onrender.com/api/status`
+   - Interval: **5 minutes**
+
+This keeps the server alive 24/7 so reminders always fire on time.
 
 ---
 
 ## Local Development
 
-### 1. Database — Neon (free)
-
-1. Sign up at https://neon.tech
-2. Create a project → copy the **Connection String** (looks like `postgresql://user:pass@ep-xxx.neon.tech/neondb?sslmode=require`)
-
-### 2. Gmail App Password
-
-1. Go to your Google Account → **Security**
-2. Enable **2-Step Verification** if not already on
-3. Go to **App passwords** → create one (name it "Pill Reminder")
-4. Copy the 16-character password
-
-### 3. Backend
+### Backend
 
 ```bash
 cd backend
@@ -51,7 +105,7 @@ Backend runs at http://localhost:3001
 curl -X POST http://localhost:3001/api/test-email
 ```
 
-### 4. Frontend
+### Frontend
 
 ```bash
 cd frontend
@@ -60,43 +114,6 @@ npm run dev
 ```
 
 Frontend runs at http://localhost:5173
-
----
-
-## Cloud Deployment
-
-### Database → Neon
-Already set up from the local dev step.
-
-### Backend → Render
-
-1. Push your code to GitHub (you can push the whole `pill-reminder/` folder)
-2. Go to https://render.com → **New Web Service**
-3. Connect your GitHub repo, set:
-   - **Root directory**: `backend`
-   - **Build command**: `npm install`
-   - **Start command**: `node server.js`
-4. Add **Environment Variables**:
-
-| Key | Value |
-|-----|-------|
-| `GMAIL_USER` | your.email@gmail.com |
-| `GMAIL_APP_PASSWORD` | your 16-char app password |
-| `REMINDER_EMAIL` | email to receive reminders |
-| `DATABASE_URL` | your Neon connection string |
-| `FRONTEND_URL` | https://your-app.vercel.app (fill after Vercel deploy) |
-
-> **Important:** Use the **Hobby plan ($7/mo)** on Render for reliable cron scheduling.
-> The free tier spins down after 15 minutes of inactivity, which means the 12:00 PM reminder may not fire.
-
-### Frontend → Vercel
-
-1. Go to https://vercel.com → **Add New Project**
-2. Import your GitHub repo, set:
-   - **Root directory**: `frontend`
-3. Add **Environment Variable**:
-   - `VITE_API_URL` = `https://your-render-service.onrender.com`
-4. Deploy
 
 ---
 
