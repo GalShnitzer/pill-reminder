@@ -117,6 +117,22 @@ Frontend runs at http://localhost:5173
 
 ---
 
+## Screenshots
+
+![Pill Reminder App](docs/screenshot.png)
+
+---
+
+## Future Plans
+
+- **Multi-user support** — allow multiple users with individual accounts and pill tracking
+- **Email logs** — keep a history of all sent reminder emails per user
+- **Multiple pills** — manage more than one pill per day with individual tracking
+- **Configurable reminders** — let users set their own reminder times and frequency
+- **Configurable email** — let users set the recipient email from the app settings
+
+---
+
 ## Project Structure
 
 ```
