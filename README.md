@@ -2,6 +2,8 @@
 
 <img src="docs/screenshot.png" width="350" alt="Pill Reminder App" />
 
+**🔗 [Live App](https://pill-reminder.vercel.app)**
+
 A simple React + Node.js app to track daily pill intake with email reminders.
 
 - Toggle "taken / not taken" for today
