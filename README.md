@@ -1,5 +1,7 @@
 # Pill Reminder App
 
+<img src="docs/screenshot.png" width="350" alt="Pill Reminder App" />
+
 A simple React + Node.js app to track daily pill intake with email reminders.
 
 - Toggle "taken / not taken" for today
@@ -114,12 +116,6 @@ npm run dev
 ```
 
 Frontend runs at http://localhost:5173
-
----
-
-## Screenshots
-
-![Pill Reminder App](docs/screenshot.png)
 
 ---
 
